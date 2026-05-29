@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>NutriBrenVGH  — Panel Clínico</title>
+  <title>NutriBren Pro — Panel Clínico</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Fraunces:ital,wght@0,300;0,600;1,300&display=swap" rel="stylesheet"/>
   <style>
@@ -269,6 +269,82 @@
     .toast.err{background:var(--danger);}
     @keyframes tin{from{transform:translateX(110%);opacity:0}to{transform:none;opacity:1}}
     @keyframes tout{to{transform:translateX(110%);opacity:0}}
+
+    /* ══════════════ RESPONSIVE ══════════════ */
+
+    /* Tablet apaisada / desktop pequeño: 2 cols, scroll vertical */
+    @media (max-width: 1024px) {
+      .workspace{
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto;
+        overflow-y: auto;
+        height: auto;
+        flex: none;
+      }
+      html,body{ height:auto; overflow:auto; }
+    }
+
+    /* Tablet portrait: 1 columna, paneles apilados */
+    @media (max-width: 768px) {
+      html,body{ height:auto; overflow:auto; }
+
+      .topbar{ padding:0 14px; height:52px; }
+      .clock{ display:none; }
+      .user-name{ max-width:100px; }
+      .btn-logout{ padding:5px 10px; font-size:.74rem; }
+
+      .workspace{
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+        overflow: visible;
+        height: auto;
+        flex: none;
+        padding: 12px;
+        gap: 12px;
+      }
+
+      .panel{ overflow: visible; }
+      .panel-body{ overflow: visible; max-height: none; }
+
+      .form-row{ grid-template-columns: 1fr 1fr; }
+      .consult-grid{ grid-template-columns: 1fr; }
+    }
+
+    /* Móvil: ajustes finos */
+    @media (max-width: 480px) {
+      .topbar{ padding:0 12px; height:48px; }
+      .topbar-brand h1{ font-size:1.1rem; }
+      .topbar-brand small{ display:none; }
+      .user-chip{ padding:4px 10px 4px 5px; gap:6px; }
+      .user-name{ max-width:80px; font-size:.78rem; }
+
+      .workspace{ padding:10px; gap:10px; }
+
+      .panel-head{ padding:11px 14px 9px; }
+      .panel-head h2{ font-size:.88rem; }
+      .panel-body{ padding:12px 14px; }
+
+      .form-row{ grid-template-columns: 1fr; gap:0; }
+
+      input.fi, select.fi, textarea.fi{ font-size:.85rem; padding:9px 11px; }
+      .btn-main{ padding:10px; font-size:.88rem; }
+
+      .monitor-table{ font-size:.76rem; }
+      .monitor-table th, .monitor-table td{ padding:6px 7px; }
+
+      .consult-card{ padding:11px 12px; }
+      .consult-date{ font-size:.76rem; }
+
+      #toast-wrap{ bottom:14px; right:14px; }
+      .toast{ font-size:.82rem; padding:10px 16px; max-width:260px; }
+    }
+
+    /* Móvil muy pequeño */
+    @media (max-width: 360px) {
+      .topbar-brand h1{ font-size:1rem; }
+      .panel-head h2{ font-size:.82rem; gap:5px; }
+      .panel-head h2 .ph-icon{ width:24px; height:24px; font-size:.8rem; }
+    }
   </style>
 </head>
 <body>
@@ -278,7 +354,7 @@
   <div class="topbar-brand">
     <div class="topbar-icon">🌿</div>
     <div>
-      <h1>Nutri<span>BrenVGH</span>♥</h1>
+      <h1>Nutri<span>Bren</span> <small>Pro</small></h1>
     </div>
   </div>
   <div class="topbar-right">
@@ -294,7 +370,9 @@
 <!-- ══════════════ 4-PANEL WORKSPACE ══════════════ -->
 <div class="workspace">
 
-  <!-- preregistro-->
+  <!-- ┌─────────────────────────────────────┐ -->
+  <!-- │ PANEL A (top-left): Preregistro IMC │ -->
+  <!-- └─────────────────────────────────────┘ -->
   <div class="panel">
     <div class="panel-head">
       <h2><span class="ph-icon">📋</span> Preregistro de Paciente e IMC</h2>
@@ -347,7 +425,9 @@
     </div>
   </div>
 
-  <!-- monitoreo pacients -->
+  <!-- ┌──────────────────────────────────────────┐ -->
+  <!-- │ PANEL B (top-right): Monitoreo Pacientes │ -->
+  <!-- └──────────────────────────────────────────┘ -->
   <div class="panel">
     <div class="panel-head">
       <h2><span class="ph-icon">📊</span> Monitoreo de Pacientes</h2>
@@ -360,7 +440,9 @@
     </div>
   </div>
 
-  <!-- generador consutla-->
+  <!-- ┌──────────────────────────────────────────────────┐ -->
+  <!-- │ PANEL C (bottom-left): Generador de Consulta    │ -->
+  <!-- └──────────────────────────────────────────────────┘ -->
   <div class="panel">
     <div class="panel-head">
       <h2><span class="ph-icon">✍️</span> Generador de Consulta Nutricional</h2>
@@ -400,7 +482,9 @@
     </div>
   </div>
 
-  <!-- evo e historial-->
+  <!-- ┌────────────────────────────────────────────────────┐ -->
+  <!-- │ PANEL D (bottom-right): Evolución e Historial      │ -->
+  <!-- └────────────────────────────────────────────────────┘ -->
   <div class="panel">
     <div class="panel-head">
       <h2><span class="ph-icon">🗂️</span> Evolución e Historial Clínico</h2>
@@ -420,7 +504,7 @@
   //  AUTH GUARD
   // ══════════════════════════════════════════════
   const raw = sessionStorage.getItem('nutribren_session');
-  if (!raw) { window.location.replace('../index.html'); }
+  if (!raw) { window.location.replace('./index.html'); }
   const session = JSON.parse(raw);
 
   document.getElementById('top-name').textContent   = session.nutriologist;
@@ -429,7 +513,7 @@
   document.getElementById('btn-logout').addEventListener('click', () => {
     if (confirm('¿Cerrar sesión?')) {
       sessionStorage.removeItem('nutribren_session');
-      window.location.replace('../index.html');
+      window.location.replace('./index.html');
     }
   });
 

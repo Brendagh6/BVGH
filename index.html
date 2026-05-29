@@ -130,6 +130,22 @@
       text-align:center;margin-top:24px;
       font-size:.75rem;color:rgba(255,255,255,.25);
     }
+
+    /* ── RESPONSIVE ───────────────────────── */
+    @media (max-width: 480px) {
+      .card{
+        padding: 36px 24px 32px;
+        border-radius: 16px;
+      }
+      .logo-icon{ width:50px; height:50px; font-size:1.5rem; }
+      .logo h1{ font-size:1.6rem; }
+      .btn{ padding:13px; font-size:.95rem; }
+    }
+
+    @media (max-width: 360px) {
+      .card{ padding:28px 18px 24px; }
+      .logo h1{ font-size:1.4rem; }
+    }
   </style>
 </head>
 <body>
@@ -140,13 +156,13 @@
   <div class="card">
     <div class="logo">
       <div class="logo-icon">🌿</div>
-      <h1>Nutri<span>BrenVGH</span></h1>
+      <h1>Nutri<span>Bren</span></h1>
       <p>Sistema Clínico Nutricional</p>
     </div>
 
     <form id="login-form" novalidate>
       <label for="nutri-name">Nombre del Nutriólogo / Nutrióloga</label>
-      <input type="text" id="nutri-name" placeholder="Ej. Dra. Brenda VGH" autocomplete="name" autofocus required/>
+      <input type="text" id="nutri-name" placeholder="Ej. Dra. Brenda García" autocomplete="name" autofocus required/>
       <div class="error" id="login-error">Por favor ingresa tu nombre para continuar.</div>
       <button type="submit" class="btn">Ingresar al Sistema →</button>
     </form>
