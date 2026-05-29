@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NutriBren — Acceso Médico</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Fraunces:ital,wght@0,300;0,600;1,300&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+    :root{
+      --teal:       #0d9488;
+      --teal-dark:  #0f766e;
+      --teal-light: #99f6e4;
+      --teal-pale:  #ccfbf1;
+      --navy:       #0f2a3f;
+      --navy-mid:   #1a3a52;
+      --slate:      #e2ecf1;
+      --white:      #ffffff;
+      --text:       #0f2a3f;
+      --muted:      #5e8399;
+      --danger:     #e11d48;
+    }
+
+    html,body{height:100%}
+
+    body{
+      font-family:'Outfit',sans-serif;
+      background: var(--navy);
+      display:flex;align-items:center;justify-content:center;
+      min-height:100vh;
+      overflow:hidden;
+      position:relative;
+    }
+
+    /* animated bg blobs */
+    .blob{position:absolute;border-radius:50%;filter:blur(80px);opacity:.18;animation:pulse 8s ease-in-out infinite alternate;}
+    .blob-1{width:500px;height:500px;background:var(--teal);top:-120px;left:-100px;animation-delay:0s;}
+    .blob-2{width:350px;height:350px;background:#0ea5e9;bottom:-80px;right:-80px;animation-delay:-3s;}
+    .blob-3{width:220px;height:220px;background:var(--teal-light);top:40%;left:55%;animation-delay:-5s;}
+    @keyframes pulse{from{transform:scale(1)}to{transform:scale(1.18)}}
+
+    /* grid pattern */
+    body::before{
+      content:'';position:absolute;inset:0;
+      background-image:linear-gradient(rgba(13,148,136,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(13,148,136,.07) 1px,transparent 1px);
+      background-size:40px 40px;
+      pointer-events:none;
+    }
+
+    .card{
+      position:relative;z-index:10;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(153,246,228,.15);
+      backdrop-filter:blur(24px);
+      border-radius:24px;
+      padding:52px 48px 44px;
+      width:90%;max-width:420px;
+      box-shadow:0 32px 80px rgba(0,0,0,.4);
+      animation:cardIn .6s cubic-bezier(.22,1,.36,1) both;
+    }
+    @keyframes cardIn{from{opacity:0;transform:translateY(32px) scale(.97)}to{opacity:1;transform:none}}
+
+    .logo{text-align:center;margin-bottom:36px;}
+    .logo-icon{
+      display:inline-flex;align-items:center;justify-content:center;
+      width:62px;height:62px;
+      background:linear-gradient(135deg,var(--teal),#0ea5e9);
+      border-radius:16px;
+      font-size:1.8rem;
+      margin-bottom:16px;
+      box-shadow:0 8px 32px rgba(13,148,136,.5);
+    }
+    .logo h1{
+      font-family:'Fraunces',serif;
+      font-size:2rem;font-weight:600;
+      color:var(--white);letter-spacing:-.01em;
+    }
+    .logo h1 span{color:var(--teal-light);}
+    .logo p{font-size:.82rem;color:rgba(255,255,255,.45);margin-top:4px;letter-spacing:.06em;text-transform:uppercase;}
+
+    label{
+      display:block;
+      font-size:.78rem;font-weight:600;
+      color:rgba(255,255,255,.5);
+      letter-spacing:.07em;text-transform:uppercase;
+      margin-bottom:8px;margin-top:22px;
+    }
+    input{
+      width:100%;padding:13px 16px;
+      background:rgba(255,255,255,.07);
+      border:1.5px solid rgba(153,246,228,.2);
+      border-radius:10px;
+      font-family:'Outfit',sans-serif;font-size:.97rem;
+      color:var(--white);
+      outline:none;transition:all .22s;
+    }
+    input::placeholder{color:rgba(255,255,255,.28);}
+    input:focus{
+      border-color:var(--teal-light);
+      background:rgba(255,255,255,.1);
+      box-shadow:0 0 0 3px rgba(153,246,228,.15);
+    }
+
+    .btn{
+      margin-top:28px;width:100%;
+      padding:14px;
+      background:linear-gradient(135deg,var(--teal),var(--teal-dark));
+      border:none;border-radius:10px;
+      font-family:'Outfit',sans-serif;font-size:1rem;font-weight:600;
+      color:var(--white);cursor:pointer;
+      transition:all .22s;
+      box-shadow:0 6px 24px rgba(13,148,136,.4);
+    }
+    .btn:hover{transform:translateY(-2px);box-shadow:0 10px 32px rgba(13,148,136,.55);}
+    .btn:active{transform:none;}
+
+    .error{
+      margin-top:10px;padding:10px 14px;
+      background:rgba(225,29,72,.15);
+      border:1px solid rgba(225,29,72,.3);
+      border-radius:8px;
+      color:#fda4af;font-size:.85rem;
+      display:none;
+    }
+    .error.show{display:block;}
+
+    .footer-note{
+      text-align:center;margin-top:24px;
+      font-size:.75rem;color:rgba(255,255,255,.25);
+    }
+  </style>
+</head>
+<body>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+
+  <div class="card">
+    <div class="logo">
+      <div class="logo-icon">🌿</div>
+      <h1>Nutri<span>BrenVGH</span></h1>
+      <p>Sistema Clínico Nutricional</p>
+    </div>
+
+    <form id="login-form" novalidate>
+      <label for="nutri-name">Nombre del Nutriólogo / Nutrióloga</label>
+      <input type="text" id="nutri-name" placeholder="Ej. Dra. Brenda VGH" autocomplete="name" autofocus required/>
+      <div class="error" id="login-error">Por favor ingresa tu nombre para continuar.</div>
+      <button type="submit" class="btn">Ingresar al Sistema →</button>
+    </form>
+
+    <div class="footer-note">Acceso exclusivo para personal clínico autorizado</div>
+  </div>
+
+  <script type="module">
+    // Guard: si ya hay sesión, ir directo al dashboard
+    if (sessionStorage.getItem('nutribren_session')) {
+      window.location.replace('./dashboard.html');
+    }
+
+    document.getElementById('login-form').addEventListener('submit', e => {
+      e.preventDefault();
+      const name = document.getElementById('nutri-name').value.trim();
+      const err  = document.getElementById('login-error');
+      if (!name || name.length < 2) { err.classList.add('show'); return; }
+      err.classList.remove('show');
+      sessionStorage.setItem('nutribren_session', JSON.stringify({ nutriologist: name, loginAt: Date.now() }));
+      window.location.replace('./dashboard.html');
+    });
+    document.getElementById('nutri-name').addEventListener('input', () =>
+      document.getElementById('login-error').classList.remove('show')
+    );
+  </script>
+</body>
+</html>

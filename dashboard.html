@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NutriBrenVGH  — Panel Clínico</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Fraunces:ital,wght@0,300;0,600;1,300&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+    :root{
+      --teal:       #0d9488;
+      --teal-dark:  #0f766e;
+      --teal-mid:   #14b8a6;
+      --teal-light: #99f6e4;
+      --teal-pale:  #f0fdfa;
+      --navy:       #0f2a3f;
+      --navy-mid:   #1a3a52;
+      --blue-acc:   #0ea5e9;
+      --white:      #ffffff;
+      --bg:         #f1f8f9;
+      --panel:      #ffffff;
+      --border:     #d1e8ed;
+      --text:       #0f2a3f;
+      --muted:      #5e8399;
+      --muted2:     #94adb8;
+      --danger:     #e11d48;
+      --gold:       #f59e0b;
+      --radius:     14px;
+      --radius-sm:  8px;
+      --shadow:     0 2px 12px rgba(13,148,136,.10);
+      --shadow-md:  0 6px 28px rgba(13,148,136,.15);
+    }
+
+    html,body{height:100%;overflow:hidden;}
+
+    body{
+      font-family:'Outfit',sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      display:flex;flex-direction:column;
+    }
+
+    /* ══════════════ TOPBAR ══════════════ */
+    .topbar{
+      height:56px;flex-shrink:0;
+      background:var(--navy);
+      display:flex;align-items:center;justify-content:space-between;
+      padding:0 24px;
+      box-shadow:0 2px 16px rgba(0,0,0,.2);
+      z-index:100;
+    }
+    .topbar-brand{display:flex;align-items:center;gap:10px;}
+    .topbar-icon{
+      width:32px;height:32px;
+      background:linear-gradient(135deg,var(--teal),var(--blue-acc));
+      border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;
+    }
+    .topbar-brand h1{
+      font-family:'Fraunces',serif;font-size:1.3rem;font-weight:600;
+      color:var(--white);
+    }
+    .topbar-brand h1 span{color:var(--teal-light);}
+    .topbar-brand small{font-size:.7rem;color:rgba(255,255,255,.4);letter-spacing:.05em;text-transform:uppercase;margin-left:2px;}
+
+    .topbar-right{display:flex;align-items:center;gap:16px;}
+    .clock{font-size:.82rem;color:var(--teal-light);font-variant-numeric:tabular-nums;}
+    .user-chip{
+      display:flex;align-items:center;gap:8px;
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(153,246,228,.2);
+      border-radius:99px;padding:5px 14px 5px 6px;
+    }
+    .user-avatar{
+      width:26px;height:26px;border-radius:50%;
+      background:linear-gradient(135deg,var(--teal),var(--blue-acc));
+      display:flex;align-items:center;justify-content:center;
+      font-size:.75rem;font-weight:700;color:var(--white);
+    }
+    .user-name{font-size:.82rem;color:rgba(255,255,255,.85);font-weight:500;max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .btn-logout{
+      background:rgba(225,29,72,.15);border:1px solid rgba(225,29,72,.25);
+      color:#fda4af;padding:5px 12px;border-radius:6px;
+      font-family:'Outfit',sans-serif;font-size:.78rem;font-weight:500;cursor:pointer;
+      transition:all .2s;
+    }
+    .btn-logout:hover{background:rgba(225,29,72,.3);}
+
+    /* ══════════════ MAIN GRID ══════════════ */
+    .workspace{
+      flex:1;overflow:hidden;
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      grid-template-rows:1fr 1fr;
+      gap:14px;
+      padding:14px;
+    }
+
+    /* Each panel */
+    .panel{
+      background:var(--panel);
+      border-radius:var(--radius);
+      border:1px solid var(--border);
+      box-shadow:var(--shadow);
+      display:flex;flex-direction:column;
+      overflow:hidden;
+    }
+
+    .panel-head{
+      padding:14px 18px 10px;
+      border-bottom:1px solid var(--border);
+      display:flex;align-items:center;justify-content:space-between;
+      flex-shrink:0;
+    }
+    .panel-head h2{
+      font-size:.95rem;font-weight:700;
+      color:var(--navy);display:flex;align-items:center;gap:7px;
+    }
+    .panel-head h2 .ph-icon{
+      width:28px;height:28px;
+      background:var(--teal-pale);
+      border-radius:7px;
+      display:flex;align-items:center;justify-content:center;
+      font-size:.9rem;
+    }
+
+    .panel-body{
+      flex:1;overflow-y:auto;
+      padding:16px 18px;
+    }
+    .panel-body::-webkit-scrollbar{width:4px;}
+    .panel-body::-webkit-scrollbar-track{background:transparent;}
+    .panel-body::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+
+    /* ══════════════ FORM STYLES ══════════════ */
+    .form-group{margin-bottom:12px;}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+
+    label.fl{
+      display:block;font-size:.72rem;font-weight:600;
+      color:var(--muted);letter-spacing:.06em;text-transform:uppercase;
+      margin-bottom:5px;
+    }
+
+    input.fi, select.fi, textarea.fi{
+      width:100%;padding:9px 12px;
+      background:var(--bg);
+      border:1.5px solid var(--border);
+      border-radius:var(--radius-sm);
+      font-family:'Outfit',sans-serif;font-size:.88rem;color:var(--text);
+      outline:none;transition:all .2s;
+    }
+    input.fi:focus,select.fi:focus,textarea.fi:focus{
+      border-color:var(--teal);
+      background:var(--white);
+      box-shadow:0 0 0 3px rgba(13,148,136,.12);
+    }
+    textarea.fi{resize:vertical;min-height:70px;}
+    select.fi{cursor:pointer;}
+
+    /* IMC preview */
+    .imc-preview{
+      display:none;
+      background:linear-gradient(120deg,var(--navy),var(--navy-mid));
+      border-radius:var(--radius-sm);
+      padding:12px 16px;
+      align-items:center;justify-content:space-between;
+      margin-bottom:12px;
+    }
+    .imc-preview.show{display:flex;}
+    .imc-num{font-size:1.6rem;font-family:'Fraunces',serif;color:var(--white);}
+    .imc-label{font-size:.7rem;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.05em;}
+    .badge{
+      display:inline-block;padding:4px 11px;border-radius:99px;
+      font-size:.72rem;font-weight:700;letter-spacing:.02em;
+    }
+    .b-bajo  {background:#dbeafe;color:#1d4ed8;}
+    .b-normal{background:#dcfce7;color:#15803d;}
+    .b-sobre {background:#fef9c3;color:#a16207;}
+    .b-obeso {background:#fee2e2;color:#b91c1c;}
+
+    /* Main CTA button */
+    .btn-main{
+      width:100%;padding:11px;
+      background:linear-gradient(135deg,var(--teal),var(--teal-dark));
+      border:none;border-radius:var(--radius-sm);
+      font-family:'Outfit',sans-serif;font-size:.9rem;font-weight:600;
+      color:var(--white);cursor:pointer;
+      transition:all .22s;box-shadow:0 4px 16px rgba(13,148,136,.3);
+    }
+    .btn-main:hover{transform:translateY(-1px);box-shadow:0 7px 22px rgba(13,148,136,.4);}
+    .btn-main.gold{
+      background:linear-gradient(135deg,var(--gold),#d97706);
+      box-shadow:0 4px 16px rgba(245,158,11,.3);
+    }
+    .btn-main.gold:hover{box-shadow:0 7px 22px rgba(245,158,11,.45);}
+
+    /* ══════════════ MONITOREO TABLE ══════════════ */
+    .monitor-table{width:100%;border-collapse:collapse;font-size:.82rem;}
+    .monitor-table th{
+      text-align:left;padding:7px 10px;
+      background:var(--teal-pale);
+      color:var(--teal-dark);
+      font-weight:700;font-size:.7rem;
+      text-transform:uppercase;letter-spacing:.05em;
+      position:sticky;top:0;
+    }
+    .monitor-table th:first-child{border-radius:6px 0 0 6px;}
+    .monitor-table th:last-child{border-radius:0 6px 6px 0;}
+    .monitor-table td{
+      padding:8px 10px;
+      border-bottom:1px solid #f0f7f9;
+      color:var(--text);
+      vertical-align:middle;
+    }
+    .monitor-table tr:hover td{background:#f8fdfd;}
+
+    .btn-limpiar{
+      background:rgba(225,29,72,.1);border:1px solid rgba(225,29,72,.25);
+      color:var(--danger);padding:5px 12px;border-radius:6px;
+      font-family:'Outfit',sans-serif;font-size:.75rem;font-weight:600;cursor:pointer;
+      transition:all .2s;
+    }
+    .btn-limpiar:hover{background:rgba(225,29,72,.2);}
+
+    /* ══════════════ HISTORIAL ══════════════ */
+    .consult-card{
+      background:var(--bg);
+      border:1px solid var(--border);
+      border-radius:var(--radius-sm);
+      padding:13px 15px;
+      margin-bottom:10px;
+      transition:box-shadow .2s;
+    }
+    .consult-card:hover{box-shadow:var(--shadow);}
+    .consult-card.latest{
+      border-left:3px solid var(--teal);
+      background:var(--teal-pale);
+    }
+    .consult-meta{
+      display:flex;align-items:center;justify-content:space-between;
+      margin-bottom:8px;flex-wrap:wrap;gap:6px;
+    }
+    .consult-date{font-size:.8rem;font-weight:700;color:var(--navy);}
+    .consult-nutri{font-size:.75rem;color:var(--muted);font-style:italic;}
+    .tag-latest{
+      background:var(--teal);color:var(--white);
+      font-size:.65rem;font-weight:700;padding:2px 8px;
+      border-radius:99px;letter-spacing:.04em;
+    }
+    .consult-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+    .consult-block h4{font-size:.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;}
+    .consult-block p{font-size:.82rem;color:var(--text);line-height:1.5;white-space:pre-wrap;}
+
+    /* empty state */
+    .empty{text-align:center;padding:30px 16px;color:var(--muted2);}
+    .empty .ei{font-size:2.2rem;margin-bottom:8px;}
+    .empty p{font-size:.82rem;}
+
+    /* ══════════════ TOAST ══════════════ */
+    #toast-wrap{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px;}
+    .toast{
+      padding:12px 20px;border-radius:8px;color:var(--white);font-size:.88rem;font-weight:500;
+      background:var(--teal-dark);box-shadow:var(--shadow-md);
+      animation:tin .3s ease,tout .4s ease 2.6s forwards;
+      max-width:300px;
+    }
+    .toast.err{background:var(--danger);}
+    @keyframes tin{from{transform:translateX(110%);opacity:0}to{transform:none;opacity:1}}
+    @keyframes tout{to{transform:translateX(110%);opacity:0}}
+  </style>
+</head>
+<body>
+
+<!-- ══════════════ TOPBAR ══════════════ -->
+<header class="topbar">
+  <div class="topbar-brand">
+    <div class="topbar-icon">🌿</div>
+    <div>
+      <h1>Nutri<span>BrenVGH</span>♥</h1>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <span class="clock" id="live-clock">00:00:00</span>
+    <div class="user-chip">
+      <div class="user-avatar" id="top-avatar">N</div>
+      <span class="user-name" id="top-name">—</span>
+    </div>
+    <button class="btn-logout" id="btn-logout">Cerrar sesión</button>
+  </div>
+</header>
+
+<!-- ══════════════ 4-PANEL WORKSPACE ══════════════ -->
+<div class="workspace">
+
+  <!-- preregistro-->
+  <div class="panel">
+    <div class="panel-head">
+      <h2><span class="ph-icon">📋</span> Preregistro de Paciente e IMC</h2>
+    </div>
+    <div class="panel-body">
+      <form id="form-prereg" novalidate>
+        <div class="form-group">
+          <label class="fl" for="p-name">Nombre Completo del Paciente *</label>
+          <input class="fi" type="text" id="p-name" placeholder="Nombre y apellidos" required/>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group" style="margin:0">
+            <label class="fl" for="p-sex">Sexo *</label>
+            <select class="fi" id="p-sex" required>
+              <option value="">Selecciona…</option>
+              <option value="Femenino">Femenino</option>
+              <option value="Masculino">Masculino</option>
+              <option value="Otro">Otro</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin:0">
+            <label class="fl" for="p-age">Edad (años) *</label>
+            <input class="fi" type="number" id="p-age" min="1" max="120" placeholder="Ej. 35" required/>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group" style="margin:0">
+            <label class="fl" for="p-weight">Peso (kg) *</label>
+            <input class="fi" type="number" id="p-weight" step="0.1" min="1" max="300" placeholder="Ej. 72.5" required/>
+          </div>
+          <div class="form-group" style="margin:0">
+            <label class="fl" for="p-height">Altura (m) *</label>
+            <input class="fi" type="number" id="p-height" step="0.01" min="0.5" max="2.5" placeholder="Ej. 1.75" required/>
+          </div>
+        </div>
+
+        <!-- IMC preview en tiempo real -->
+        <div class="imc-preview" id="imc-preview">
+          <div>
+            <div class="imc-label">IMC Calculado</div>
+            <div class="imc-num" id="imc-num">—</div>
+          </div>
+          <span class="badge" id="imc-badge">—</span>
+        </div>
+
+        <button type="submit" class="btn-main">⊕ Calcular e Incorporar Paciente</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- monitoreo pacients -->
+  <div class="panel">
+    <div class="panel-head">
+      <h2><span class="ph-icon">📊</span> Monitoreo de Pacientes</h2>
+      <button class="btn-limpiar" id="btn-limpiar">Limpiar BD</button>
+    </div>
+    <div class="panel-body" style="padding:10px 14px;">
+      <div id="monitor-wrap">
+        <!-- Tabla renderizada por JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- generador consutla-->
+  <div class="panel">
+    <div class="panel-head">
+      <h2><span class="ph-icon">✍️</span> Generador de Consulta Nutricional</h2>
+    </div>
+    <div class="panel-body">
+      <form id="form-consult" novalidate>
+        <div class="form-group">
+          <label class="fl" for="c-patient">Seleccionar Paciente *</label>
+          <select class="fi" id="c-patient" required>
+            <option value="">— Selecciona un paciente —</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group" style="margin:0">
+            <label class="fl" for="c-date">Fecha de Cita *</label>
+            <input class="fi" type="date" id="c-date" required/>
+          </div>
+          <div class="form-group" style="margin:0">
+            <label class="fl" for="c-time">Hora de Cita *</label>
+            <input class="fi" type="time" id="c-time" required/>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="fl" for="c-evol">Evolución Clínica / Diagnóstico *</label>
+          <textarea class="fi" id="c-evol" rows="3" placeholder="Ej. Control trimestral de lípidos…" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="fl" for="c-plan">Plan Dietético Recomendado *</label>
+          <textarea class="fi" id="c-plan" rows="3" placeholder="Ej. Reducir sodio a 1.5g, desayuno rico en grasas saludables…" required></textarea>
+        </div>
+
+        <button type="submit" class="btn-main gold">💾 Guardar Consulta</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- evo e historial-->
+  <div class="panel">
+    <div class="panel-head">
+      <h2><span class="ph-icon">🗂️</span> Evolución e Historial Clínico</h2>
+    </div>
+    <div class="panel-body" id="history-body">
+      <!-- Renderizado por JS -->
+    </div>
+  </div>
+
+</div>
+
+<!-- Toast container -->
+<div id="toast-wrap"></div>
+
+<script type="module">
+  // ══════════════════════════════════════════════
+  //  AUTH GUARD
+  // ══════════════════════════════════════════════
+  const raw = sessionStorage.getItem('nutribren_session');
+  if (!raw) { window.location.replace('../index.html'); }
+  const session = JSON.parse(raw);
+
+  document.getElementById('top-name').textContent   = session.nutriologist;
+  document.getElementById('top-avatar').textContent = session.nutriologist.charAt(0).toUpperCase();
+
+  document.getElementById('btn-logout').addEventListener('click', () => {
+    if (confirm('¿Cerrar sesión?')) {
+      sessionStorage.removeItem('nutribren_session');
+      window.location.replace('../index.html');
+    }
+  });
+
+  // ══════════════════════════════════════════════
+  //  STORAGE HELPERS
+  // ══════════════════════════════════════════════
+  const PATIENTS_KEY = 'nutribren_patients';
+  const CONSULTS_KEY = 'nutribren_consultations';
+
+  function getPatients() {
+    try { return JSON.parse(localStorage.getItem(PATIENTS_KEY)) || []; } catch { return []; }
+  }
+  function savePatients(arr) { localStorage.setItem(PATIENTS_KEY, JSON.stringify(arr)); }
+
+  function getConsults() {
+    try { return JSON.parse(localStorage.getItem(CONSULTS_KEY)) || []; } catch { return []; }
+  }
+  function saveConsults(arr) { localStorage.setItem(CONSULTS_KEY, JSON.stringify(arr)); }
+
+  // ══════════════════════════════════════════════
+  //  IMC CALC
+  // ══════════════════════════════════════════════
+  function calcIMC(kg, m) {
+    const v = kg / (m * m);
+    const imc = parseFloat(v.toFixed(2));
+    if (imc < 18.5) return { imc, label: 'Bajo peso',   cls: 'b-bajo'   };
+    if (imc < 25)   return { imc, label: 'Peso normal', cls: 'b-normal' };
+    if (imc < 30)   return { imc, label: 'Sobrepeso',   cls: 'b-sobre'  };
+    return               { imc, label: 'Obesidad',    cls: 'b-obeso'  };
+  }
+
+  // ══════════════════════════════════════════════
+  //  CLOCK
+  // ══════════════════════════════════════════════
+  function tick() {
+    document.getElementById('live-clock').textContent =
+      new Date().toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  }
+  tick(); setInterval(tick, 1000);
+
+  // ══════════════════════════════════════════════
+  //  TOAST
+  // ══════════════════════════════════════════════
+  function toast(msg, isErr = false) {
+    const wrap = document.getElementById('toast-wrap');
+    const el = document.createElement('div');
+    el.className = 'toast' + (isErr ? ' err' : '');
+    el.textContent = msg;
+    wrap.appendChild(el);
+    setTimeout(() => el.remove(), 3100);
+  }
+
+  // ══════════════════════════════════════════════
+  //  IMC LIVE PREVIEW (Preregistro)
+  // ══════════════════════════════════════════════
+  const wInp = document.getElementById('p-weight');
+  const hInp = document.getElementById('p-height');
+  const imcPrev  = document.getElementById('imc-preview');
+  const imcNum   = document.getElementById('imc-num');
+  const imcBadge = document.getElementById('imc-badge');
+
+  function updateIMCPreview() {
+    const kg = parseFloat(wInp.value);
+    const m  = parseFloat(hInp.value);
+    if (kg > 0 && m > 0.3 && m < 2.5) {
+      const r = calcIMC(kg, m);
+      imcNum.textContent = r.imc;
+      imcBadge.textContent = r.label;
+      imcBadge.className = 'badge ' + r.cls;
+      imcPrev.classList.add('show');
+    } else {
+      imcPrev.classList.remove('show');
+    }
+  }
+  wInp.addEventListener('input', updateIMCPreview);
+  hInp.addEventListener('input', updateIMCPreview);
+
+  // ══════════════════════════════════════════════
+  //  RENDER MONITOREO TABLE
+  // ══════════════════════════════════════════════
+  function renderMonitor() {
+    const patients = getPatients();
+    const wrap = document.getElementById('monitor-wrap');
+
+    if (!patients.length) {
+      wrap.innerHTML = `<div class="empty"><div class="ei">🏥</div><p>Sin registros clínicos locales.</p></div>`;
+      return;
+    }
+
+    wrap.innerHTML = `
+      <table class="monitor-table">
+        <thead>
+          <tr>
+            <th>Paciente</th>
+            <th>Edad/Sexo</th>
+            <th>Peso/Talla</th>
+            <th>IMC</th>
+            <th>Diagnóstico</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${patients.map(p => `
+            <tr>
+              <td style="font-weight:600">${esc(p.name)}</td>
+              <td>${p.age} a. / ${esc(p.sex)}</td>
+              <td>${p.weight} kg / ${p.height} m</td>
+              <td style="font-weight:700;color:var(--navy)">${p.imc}</td>
+              <td><span class="badge ${p.imcCls}">${esc(p.imcLabel)}</span></td>
+            </tr>`).join('')}
+        </tbody>
+      </table>`;
+  }
+
+  // ══════════════════════════════════════════════
+  //  RENDER PATIENT SELECT (Consulta)
+  // ══════════════════════════════════════════════
+  function renderPatientSelect() {
+    const sel = document.getElementById('c-patient');
+    const cur = sel.value;
+    const patients = getPatients();
+    sel.innerHTML = '<option value="">— Selecciona un paciente —</option>' +
+      patients.map(p =>
+        `<option value="${p.id}" ${p.id === cur ? 'selected' : ''}>
+          ${esc(p.name)} (IMC: ${p.imc})
+        </option>`
+      ).join('');
+  }
+
+  // ══════════════════════════════════════════════
+  //  RENDER HISTORIAL
+  // ══════════════════════════════════════════════
+  function renderHistory() {
+    const body = document.getElementById('history-body');
+    const consults = getConsults().slice().sort((a,b) => new Date(b.datetime) - new Date(a.datetime));
+
+    if (!consults.length) {
+      body.innerHTML = `<div class="empty"><div class="ei">📋</div><p>Sin consultas registradas.</p></div>`;
+      return;
+    }
+
+    const months = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+    body.innerHTML = consults.map((c, i) => {
+      const [y,m,d] = c.date.split('-');
+      const fecha = `${parseInt(d)} de ${months[parseInt(m)-1]} de ${y} — ${c.time} hrs`;
+      return `
+        <div class="consult-card ${i === 0 ? 'latest' : ''}">
+          <div class="consult-meta">
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+              <span class="consult-date">${fecha}</span>
+              ${i === 0 ? '<span class="tag-latest">Más reciente</span>' : ''}
+            </div>
+            <span class="consult-nutri">Dr(a). ${esc(c.nutriologist)}</span>
+          </div>
+          <div style="font-size:.78rem;color:var(--teal-dark);font-weight:600;margin-bottom:8px;">
+            👤 ${esc(c.patientName)}
+          </div>
+          <div class="consult-grid">
+            <div class="consult-block">
+              <h4>📈 Evolución / Diagnóstico</h4>
+              <p>${esc(c.evol)}</p>
+            </div>
+            <div class="consult-block">
+              <h4>🥗 Plan Dietético</h4>
+              <p>${esc(c.plan)}</p>
+            </div>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  function esc(s) {
+    return String(s||'')
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/\n/g,'<br>');
+  }
+
+  function refreshAll() {
+    renderMonitor();
+    renderPatientSelect();
+    renderHistory();
+  }
+
+  // ══════════════════════════════════════════════
+  //  FORM: PREREGISTRO
+  // ══════════════════════════════════════════════
+  document.getElementById('form-prereg').addEventListener('submit', e => {
+    e.preventDefault();
+    const name   = document.getElementById('p-name').value.trim();
+    const sex    = document.getElementById('p-sex').value;
+    const age    = parseInt(document.getElementById('p-age').value);
+    const weight = parseFloat(document.getElementById('p-weight').value);
+    const height = parseFloat(document.getElementById('p-height').value);
+
+    if (!name || !sex || !age || !weight || !height) {
+      toast('Completa todos los campos del preregistro.', true); return;
+    }
+    if (height < 0.5 || height > 2.5) {
+      toast('Altura inválida. Ingresa en metros (Ej. 1.75).', true); return;
+    }
+
+    const patients = getPatients();
+    const dup = patients.find(p => p.name.toLowerCase() === name.toLowerCase());
+    if (dup) { toast(`"${name}" ya está registrado.`, true); return; }
+
+    const { imc, label: imcLabel, cls: imcCls } = calcIMC(weight, height);
+
+    const patient = {
+      id: crypto.randomUUID(),
+      name, sex, age, weight, height, imc, imcLabel, imcCls,
+      createdAt: new Date().toISOString()
+    };
+
+    patients.push(patient);
+    savePatients(patients);
+    toast(`✔ ${name} registrado — IMC: ${imc} (${imcLabel})`);
+    document.getElementById('form-prereg').reset();
+    imcPrev.classList.remove('show');
+    refreshAll();
+  });
+
+  // ══════════════════════════════════════════════
+  //  FORM: CONSULTA
+  // ══════════════════════════════════════════════
+  document.getElementById('form-consult').addEventListener('submit', e => {
+    e.preventDefault();
+    const patId = document.getElementById('c-patient').value;
+    const date  = document.getElementById('c-date').value;
+    const time  = document.getElementById('c-time').value;
+    const evol  = document.getElementById('c-evol').value.trim();
+    const plan  = document.getElementById('c-plan').value.trim();
+
+    if (!patId || !date || !time || !evol || !plan) {
+      toast('Completa todos los campos de la consulta.', true); return;
+    }
+
+    const patients = getPatients();
+    const pat = patients.find(p => p.id === patId);
+
+    const consults = getConsults();
+    consults.push({
+      id: crypto.randomUUID(),
+      patientId: patId,
+      patientName: pat ? pat.name : '—',
+      nutriologist: session.nutriologist,
+      date, time,
+      datetime: new Date(`${date}T${time}`).toISOString(),
+      evol, plan,
+      createdAt: new Date().toISOString()
+    });
+    saveConsults(consults);
+    toast('✔ Consulta registrada y guardada.');
+    document.getElementById('form-consult').reset();
+    // Re-set defaults
+    const now = new Date();
+    document.getElementById('c-date').value = now.toISOString().split('T')[0];
+    document.getElementById('c-time').value = now.toTimeString().slice(0,5);
+    refreshAll();
+  });
+
+  // ══════════════════════════════════════════════
+  //  LIMPIAR BD
+  // ══════════════════════════════════════════════
+  document.getElementById('btn-limpiar').addEventListener('click', () => {
+    if (!confirm('¿Eliminar TODOS los pacientes y consultas? Esta acción es irreversible.')) return;
+    localStorage.removeItem(PATIENTS_KEY);
+    localStorage.removeItem(CONSULTS_KEY);
+    toast('Base de datos limpiada.');
+    refreshAll();
+  });
+
+  // ══════════════════════════════════════════════
+  //  INIT
+  // ══════════════════════════════════════════════
+  const now = new Date();
+  document.getElementById('c-date').value = now.toISOString().split('T')[0];
+  document.getElementById('c-time').value = now.toTimeString().slice(0, 5);
+  refreshAll();
+</script>
+</body>
+</html>
